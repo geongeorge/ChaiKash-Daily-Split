@@ -51,7 +51,7 @@ export default function SplitScreen() {
   }, [token]);
 
   const { data: expenses, isLoading: isLoadingExpenses } = useQuery({
-    queryKey: ["expenses"],
+    queryKey: ["expenses", { groupId }],
     queryFn: () => {
       if (!splitwiseService) return [];
 

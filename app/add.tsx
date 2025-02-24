@@ -389,7 +389,7 @@ export default function AddScreen() {
                   onPress={() => toggleUser(user)}
                   style={styles.chip}
                 >
-                  {user.first_name}
+                  {user.first_name} {user?.last_name?.[0] || ""}
                 </Chip>
               ))}
             </View>

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Clipboard,
   TextInput as RNTextInput,
+  Linking,
 } from "react-native";
 import {
   Button,
@@ -88,8 +89,8 @@ export default function SettingsScreen() {
   };
 
   const saveGroup = async (groupId: string) => {
-    queryClient.invalidateQueries({ queryKey: ["group"] });
-    queryClient.invalidateQueries({ queryKey: ["expenses"] });
+    queryClient.refetchQueries({ queryKey: ["group"] });
+    queryClient.refetchQueries({ queryKey: ["expenses"] });
     setSelectedGroup(groupId);
   };
 
@@ -217,6 +218,18 @@ export default function SettingsScreen() {
           ))}
         </RadioButton.Group>
       </Surface>
+
+      <Surface style={[styles.section, styles.infoSection]} elevation={0}>
+        <Text style={[styles.infoText, styles.mutedText]}>
+          To get your Splitwise token, visit:{"\n"}
+          <Text
+            style={styles.link}
+            onPress={() => Linking.openURL("https://secure.splitwise.com/apps")}
+          >
+            https://secure.splitwise.com/apps
+          </Text>
+        </Text>
+      </Surface>
     </ScrollView>
   );
 }
@@ -295,5 +308,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.light.tint,
     marginBottom: 8,
+  },
+  infoText: {
+    fontSize: 16,
+    lineHeight: 24,
+    marginBlockEnd: 16,
+  },
+  link: {
+    color: Colors.light.tint,
+    textDecorationLine: "underline",
+  },
+  infoSection: {
+    backgroundColor: "transparent",
+    fontSize: 14,
+  },
+  mutedText: {
+    color: "#64748B",
   },
 });
