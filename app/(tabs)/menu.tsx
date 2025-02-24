@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import {
   View,
   StyleSheet,
@@ -19,11 +19,14 @@ import { Colors } from "@/constants/Colors";
 import { type Currency, storage, STORAGE_KEYS } from "@/lib/storage";
 import { useMMKVObject } from "react-native-mmkv";
 import { Stack } from "expo-router";
+import { TagInput } from "@/components/TagInput";
+import { TagsList } from "@/components/TagsList";
 
 interface MenuItem {
   id: string;
   name: string;
   price: number;
+  tags: string[];
 }
 
 export default function MenuScreen() {
@@ -36,12 +39,20 @@ export default function MenuScreen() {
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const [itemName, setItemName] = useState("");
   const [itemPrice, setItemPrice] = useState("");
+  const [itemTags, setItemTags] = useState<string[]>([]);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+
+  // Get unique tags from existing items
+  const existingTags = useMemo(() => {
+    if (!items) return new Set<string>();
+    return new Set(items.flatMap((item) => item.tags).filter(Boolean));
+  }, [items]);
 
   const handleAddItem = () => {
     setEditingItem(null);
     setItemName("");
     setItemPrice("");
+    setItemTags([]);
     setDialogVisible(true);
   };
 
@@ -49,6 +60,7 @@ export default function MenuScreen() {
     setEditingItem(item);
     setItemName(item.name);
     setItemPrice(item.price.toString());
+    setItemTags(item.tags || []);
     setDialogVisible(true);
   };
 
@@ -61,7 +73,9 @@ export default function MenuScreen() {
     if (editingItem) {
       // Edit existing item
       const newItems = items?.map((item) =>
-        item.id === editingItem.id ? { ...item, name: itemName, price } : item
+        item.id === editingItem.id
+          ? { ...item, name: itemName, price, tags: itemTags || [] }
+          : item
       );
       setItems(newItems || []);
     } else {
@@ -70,6 +84,7 @@ export default function MenuScreen() {
         id: Date.now().toString(),
         name: itemName,
         price,
+        tags: itemTags || [],
       };
       setItems([...(items || []), newItem]);
     }
@@ -78,6 +93,7 @@ export default function MenuScreen() {
     setEditingItem(null);
     setItemName("");
     setItemPrice("");
+    setItemTags([]);
   };
 
   const handleSelectItem = (item: MenuItem) => {
@@ -223,12 +239,17 @@ export default function MenuScreen() {
                 }}
                 android_ripple={{ color: "rgba(0, 0, 0, 0.05)" }}
               >
-                <View>
+                <View style={styles.itemInfo}>
                   <Text style={styles.itemName}>{item.name}</Text>
-                  <Text style={styles.itemPrice}>
-                    {currency?.symbol}
-                    {Number(item.price).toFixed(2)}
-                  </Text>
+                  <View style={styles.itemDetails}>
+                    <Text style={styles.itemPrice}>
+                      {currency?.symbol}
+                      {Number(item.price).toFixed(2)}
+                    </Text>
+                  </View>
+                  {item.tags?.length > 0 && (
+                    <TagsList tags={item.tags} style={styles.itemTags} />
+                  )}
                 </View>
                 <View style={styles.itemActions}>
                   {selectedItems.size === 0 && (
@@ -315,6 +336,12 @@ export default function MenuScreen() {
                     onChangeText={setItemPrice}
                     keyboardType="decimal-pad"
                     style={styles.textInput}
+                  />
+                  <TagInput
+                    value={itemTags}
+                    onChange={setItemTags}
+                    suggestions={existingTags}
+                    placeholder="Add tags..."
                   />
 
                   <View style={styles.buttonContainer}>
@@ -551,5 +578,16 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "600",
+  },
+  itemDetails: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  itemInfo: {
+    flex: 1,
+  },
+  itemTags: {
+    marginTop: 8,
   },
 });
