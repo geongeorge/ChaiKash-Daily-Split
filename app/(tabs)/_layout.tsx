@@ -2,10 +2,10 @@ import { Tabs } from "expo-router";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
-import { IconButton, useTheme } from "react-native-paper";
+import { IconButton } from "react-native-paper";
+import { Ionicons } from "@expo/vector-icons";
 
 import { HapticTab } from "@/components/HapticTab";
-import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -23,15 +23,15 @@ export default function TabLayout() {
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: "absolute",
-            // backgroundColor: "transparent",
+            backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent background
             paddingTop: 8,
+            height: 88, // Ensure consistent height
           },
-          default: {},
+          default: {
+            height: 64, // Standard height for Android
+          },
         }),
         sceneStyle: {
-          paddingBottom: 16,
           flex: 1,
         },
       }}
@@ -47,8 +47,8 @@ export default function TabLayout() {
               style={{ marginRight: 8 }}
             />
           ),
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="plus.circle.fill" color={color} />
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="add-circle" size={size} color={color} />
           ),
         }}
       />
@@ -57,8 +57,8 @@ export default function TabLayout() {
         name="menu"
         options={{
           title: "Menu Items",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="list.bullet" color={color} />
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="list" size={size} color={color} />
           ),
         }}
       />

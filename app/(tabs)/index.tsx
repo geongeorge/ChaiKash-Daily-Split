@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Alert,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import SplitwiseService from "@/services/splitwise";
 import type { SplitwiseUser, SplitwiseGroup } from "@/services/splitwise";
@@ -18,6 +19,7 @@ import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { format } from "date-fns";
+import { Ionicons } from "@expo/vector-icons";
 
 interface MenuItem {
   id: string;
@@ -178,13 +180,14 @@ export default function SplitScreen() {
         )}
       </View>
 
-      <FAB
-        icon="plus"
+      <TouchableOpacity
         style={styles.fab}
         onPress={() => {
           router.push("/add");
         }}
-      />
+      >
+        <Ionicons name="add" size={24} color="white" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -192,14 +195,14 @@ export default function SplitScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   content: {
     flex: 1,
-    padding: 16,
+    paddingBlockStart: 0,
   },
   expensesList: {
     flex: 1,
+    padding: 16,
   },
   loadingContainer: {
     flex: 1,
@@ -209,7 +212,7 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 16,
-    color: "#666",
+    color: "#f3f3f3",
     textAlign: "center",
   },
   userList: {
@@ -217,7 +220,7 @@ const styles = StyleSheet.create({
   },
   userSection: {
     marginBottom: 24,
-    backgroundColor: "#f8f8f8",
+    backgroundColor: "#fafafa",
     borderRadius: 12,
     padding: 12,
   },
@@ -303,13 +306,22 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 80, // Positioned above the split button
+    right: 16,
+    bottom: 16,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: Colors.light.tint,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   expenseItem: {
-    backgroundColor: "#f8f8f8",
+    backgroundColor: "#fff",
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -360,7 +372,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     lineHeight: 20,
     paddingHorizontal: 8,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#f8f8f8",
     borderRadius: 4,
     paddingVertical: 4,
   },
