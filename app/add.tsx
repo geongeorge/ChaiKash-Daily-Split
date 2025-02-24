@@ -282,7 +282,7 @@ export default function AddScreen() {
         ...current,
         {
           userId: user.id,
-          userName: `${user.first_name} ${user.last_name}`,
+          userName: `${user.first_name} ${user?.last_name || ""}`,
           items: [],
           total: 0,
         },
