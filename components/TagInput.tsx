@@ -53,7 +53,10 @@ export function TagInput({
         {value.map((tag) => (
           <View
             key={tag}
-            style={[styles.tag, { backgroundColor: getColorFromString(tag) }]}
+            style={[
+              styles.tag,
+              { backgroundColor: `${getColorFromString(tag)}18` },
+            ]}
           >
             <Text style={styles.tagText}>{tag}</Text>
             <TouchableOpacity
@@ -88,7 +91,7 @@ export function TagInput({
                   <View
                     style={[
                       styles.suggestionTag,
-                      { backgroundColor: getColorFromString(tag) },
+                      { backgroundColor: `${getColorFromString(tag)}18` },
                     ]}
                   >
                     <Text style={styles.tagText}>{tag}</Text>

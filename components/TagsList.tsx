@@ -16,7 +16,10 @@ export function TagsList({ tags = [], style }: TagsListProps) {
       {tags.map((tag) => (
         <View
           key={tag}
-          style={[styles.tag, { backgroundColor: getColorFromString(tag) }]}
+          style={[
+            styles.tag,
+            { backgroundColor: `${getColorFromString(tag)}18` },
+          ]}
         >
           <Text style={styles.tagText}>{tag}</Text>
         </View>

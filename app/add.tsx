@@ -22,6 +22,7 @@ import { storage, STORAGE_KEYS, type Currency } from "@/lib/storage";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import SplitwiseService, { type SplitwiseUser } from "@/services/splitwise";
 import { Colors } from "@/constants/Colors";
+import { getColorFromString } from "@/lib/utils";
 
 export interface MenuItem {
   id: string;
@@ -132,7 +133,6 @@ const createStyles = (theme: MD3Theme) =>
     },
     tagChip: {
       marginBottom: 4,
-      backgroundColor: "#F3F4F6",
     },
     menuItemTags: {
       flexDirection: "row",
@@ -143,8 +143,6 @@ const createStyles = (theme: MD3Theme) =>
     },
     menuItemTag: {
       fontSize: 10,
-      color: "#4B5563",
-      backgroundColor: "#F3F4F6",
       paddingHorizontal: 6,
       paddingVertical: 2,
       borderRadius: 4,
@@ -406,24 +404,32 @@ export default function AddScreen() {
                 <Chip
                   selected={selectedTag === null}
                   onPress={() => setSelectedTag(null)}
-                  style={styles.tagChip}
+                  style={[styles.tagChip, { backgroundColor: "#F3F4F6" }]}
                   textStyle={{ color: "#4B5563" }}
                   selectedColor={Colors.light.tint}
                 >
                   All
                 </Chip>
-                {uniqueTags.map((tag) => (
-                  <Chip
-                    key={tag}
-                    selected={selectedTag === tag}
-                    onPress={() => setSelectedTag(tag)}
-                    style={styles.tagChip}
-                    textStyle={{ color: "#4B5563" }}
-                    selectedColor={Colors.light.tint}
-                  >
-                    {tag}
-                  </Chip>
-                ))}
+                {uniqueTags.map((tag) => {
+                  const tagColor = getColorFromString(tag);
+                  return (
+                    <Chip
+                      key={tag}
+                      selected={selectedTag === tag}
+                      onPress={() => setSelectedTag(tag)}
+                      style={[
+                        styles.tagChip,
+                        { backgroundColor: `${tagColor}18` },
+                      ]}
+                      textStyle={{
+                        color: "#1E293B",
+                      }}
+                      selectedColor={tagColor}
+                    >
+                      {tag}
+                    </Chip>
+                  );
+                })}
               </View>
               {selectedUsers.map((user) => (
                 <View key={user.userId} style={styles.userSection}>
@@ -437,11 +443,23 @@ export default function AddScreen() {
                       >
                         <Text style={styles.menuItemName}>{item.name}</Text>
                         <View style={styles.menuItemTags}>
-                          {item.tags?.map((tag) => (
-                            <Text key={tag} style={styles.menuItemTag}>
-                              {tag}
-                            </Text>
-                          ))}
+                          {item.tags?.map((tag) => {
+                            const tagColor = getColorFromString(tag);
+                            return (
+                              <Text
+                                key={tag}
+                                style={[
+                                  styles.menuItemTag,
+                                  {
+                                    color: "#1E293B",
+                                    backgroundColor: `${tagColor}18`,
+                                  },
+                                ]}
+                              >
+                                {tag}
+                              </Text>
+                            );
+                          })}
                         </View>
                         <Text style={styles.menuItemPrice}>
                           {currency?.symbol}
